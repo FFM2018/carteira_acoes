@@ -1,5 +1,9 @@
 package br.com.carteira.api.openApi;
 
+import java.util.List;
+
+import org.springframework.hateoas.CollectionModel;
+
 import br.com.carteira.api.exceptionhandler.Problem;
 import br.com.carteira.api.model.dto.EmpresaDto;
 import br.com.carteira.api.model.form.EmpresaForm;
@@ -11,8 +15,8 @@ import io.swagger.annotations.ApiResponses;
 
 @Api(tags = "Empresas")
 public interface EmpresaControllerOpenApi {
-//	@ApiOperation("Lista os estados")
-//	List<EmpresaDto> listar();
+	@ApiOperation("Lista as empresas")
+	CollectionModel<EmpresaDto> listar();
 
 //	@ApiOperation("Busca um estado por ID")
 //	@ApiResponses({

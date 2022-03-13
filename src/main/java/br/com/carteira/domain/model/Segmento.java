@@ -10,8 +10,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-public class Empresa {
-	
+public class Segmento {
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

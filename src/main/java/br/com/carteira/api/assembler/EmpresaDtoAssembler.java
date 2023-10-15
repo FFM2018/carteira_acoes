@@ -1,38 +1,32 @@
 package br.com.carteira.api.assembler;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import br.com.carteira.api.controller.EmpresaController;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 import br.com.carteira.api.model.dto.EmpresaDto;
 import br.com.carteira.domain.model.Empresa;
 
 @Component
-public class EmpresaDtoAssembler extends RepresentationModelAssemblerSupport<Empresa, EmpresaDto>{
+public class EmpresaDtoAssembler{
 	
-	@Autowired
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 	
-	public EmpresaDtoAssembler() {
-		super(EmpresaController.class, EmpresaDto.class);
-	}
-	
-	@Override
 	public EmpresaDto toModel(Empresa empresa) {
-		EmpresaDto empresaDto = instantiateModel(empresa);
-		modelMapper.map(empresa,  empresaDto);
-		
-		return empresaDto;
+		return modelMapper.map(empresa, EmpresaDto.class);
 	}
 	
-	@Override
-	public CollectionModel<EmpresaDto> toCollectionModel(Iterable<? extends Empresa> entities){
-		
-		CollectionModel<EmpresaDto> collectionModel = super.toCollectionModel(entities);
-		
-		return collectionModel;
+
+	public List<EmpresaDto> toCollectionModel(List<Empresa> empresas) {
+		return empresas.stream()
+				.map(empresa -> toModel(empresa))
+				.collect(Collectors.toList());
 	}
+
+	public EmpresaDtoAssembler(ModelMapper modelMapper) {		
+		this.modelMapper = modelMapper;
+	}
+	
+	
 }

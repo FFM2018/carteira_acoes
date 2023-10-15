@@ -1,11 +1,10 @@
 package br.com.carteira.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,58 +13,68 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.MediaType;
 
 import br.com.carteira.api.assembler.EmpresaDtoAssembler;
 import br.com.carteira.api.assembler.EmpresaFormDisassembler;
 import br.com.carteira.api.model.dto.EmpresaDto;
 import br.com.carteira.api.model.form.EmpresaForm;
-import br.com.carteira.api.openApi.EmpresaControllerOpenApi;
 import br.com.carteira.domain.model.Empresa;
-import br.com.carteira.domain.repository.EmpresaRepository;
+import br.com.carteira.domain.model.Setor;
 import br.com.carteira.domain.service.CadastroEmpresaService;
+import lombok.AllArgsConstructor;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping(path = "/empresas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class EmpresaController implements EmpresaControllerOpenApi{
+@AllArgsConstructor
+@RequestMapping(path = "api/empresa")
+public class EmpresaController {
 	
-	@Autowired
-	private CadastroEmpresaService cadastroEmpresaService;
+	private final CadastroEmpresaService cadastroEmpresaService;	
 	
-	@Autowired
-	private EmpresaRepository empresaRepository;
+	private final EmpresaFormDisassembler empresaFormDisassebler;	
 	
-	@Autowired
-	private EmpresaFormDisassembler empresaFormDisassebler;	
-	
-	@Autowired
-	private EmpresaDtoAssembler empresaDtoAssembler;
-	
-	@Override
+	private final EmpresaDtoAssembler empresaDtoAssembler;
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EmpresaDto adicionar(@RequestBody @Valid EmpresaForm empresaForm) {
+	public EmpresaDto add(@RequestBody @Valid EmpresaForm empresaForm) {
+		
 		Empresa empresa = empresaFormDisassebler.toDomainObject(empresaForm);
 		
-		empresa = cadastroEmpresaService.salvar(empresa);
+		empresa = cadastroEmpresaService.save(empresa);
 		
 		return empresaDtoAssembler.toModel(empresa);
 	}	
 	
-	@Override
+	
 	@GetMapping
-	public CollectionModel<EmpresaDto> listar(){
-		List<Empresa> empresas = empresaRepository.findAll();
-		
-		return empresaDtoAssembler.toCollectionModel(empresas);
+	public List<EmpresaDto> getAllEmpresa(){
+		 List<Empresa> empresas = cadastroEmpresaService.getAllEmpresa();
+		    List<EmpresaDto> listaEmpresas = empresaDtoAssembler.toCollectionModel(empresas);
+		    return listaEmpresas;
 	}
 	
-	@Override
+
+	@GetMapping("/{empresaId}")
+	public EmpresaDto getById(@PathVariable Long empresaId) {
+		Empresa empresa = cadastroEmpresaService.find(empresaId);
+		
+		return empresaDtoAssembler.toModel(empresa);
+	}
+	
 	@DeleteMapping("/{empresaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long empresaId) {
-		cadastroEmpresaService.excluir(empresaId);
+	public void remove(@PathVariable Long empresaId) {
+		cadastroEmpresaService.remove(empresaId);
 		
+	}
+	
+	@GetMapping("/setores")
+	public List<Setor> getAllSetor() {
+		List<Setor> setor = new ArrayList<Setor>();
+		setor.addAll(cadastroEmpresaService.getAllSetor());		
+		
+		return setor;
 	}
 }

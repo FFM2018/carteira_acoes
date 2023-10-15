@@ -10,6 +10,6 @@ public class EmpresaNaoEncontradaException extends EntidadeNaoEncontradaExceptio
 	}
 	
 	public EmpresaNaoEncontradaException(Long empresaId) {
-		this(String.format("Não ediste um cadastro de empresa com o código %d", empresaId));
+		this(String.format("Não existe um cadastro de empresa com o código %d", empresaId));
 	}
 }

@@ -1,7 +1,5 @@
 package br.com.carteira.api.openApi;
 
-import java.util.List;
-
 import org.springframework.hateoas.CollectionModel;
 
 import br.com.carteira.api.exceptionhandler.Problem;
@@ -18,14 +16,14 @@ public interface EmpresaControllerOpenApi {
 	@ApiOperation("Lista as empresas")
 	CollectionModel<EmpresaDto> listar();
 
-//	@ApiOperation("Busca um estado por ID")
-//	@ApiResponses({
-//		@ApiResponse(code = 400, message = "ID da empresa inválido", response = Problem.class),
-//		@ApiResponse(code = 404, message = "Empresa não encontrada", response = Problem.class)
-//	})
-//	EmpresaDto buscar(
-//			@ApiParam(value = "ID de uma empresa", example = "1", required = true)
-//			Long empresaId);
+	@ApiOperation("Busca uma empresa por ID")
+	@ApiResponses({
+		@ApiResponse(code = 400, message = "ID da empresa inválido", response = Problem.class),
+		@ApiResponse(code = 404, message = "Empresa não encontrada", response = Problem.class)
+	})
+	EmpresaDto buscar(
+			@ApiParam(value = "ID de uma empresa", example = "1", required = true)
+			Long empresaId);
 //
 	@ApiOperation("Cadastra uma empresa")
 	@ApiResponses({
